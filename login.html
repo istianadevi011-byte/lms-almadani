@@ -88,8 +88,9 @@
     <script>
         // JavaScript untuk menangani submit form dan redirect ke dashboard.html
         document.getElementById('loginForm').addEventListener('submit', function(event) {
-            event.preventDefault(); // Mencegah submit default
-            // Di sini Anda bisa menambahkan validasi atau pengiriman data ke server
+            event.preventDefault(); // Mencegah submit default (POST)
+            // Di sini Anda bisa menambahkan validasi sederhana jika perlu
+            // Contoh: if (email.value === 'test@example.com' && password.value === 'password') { window.location.href = 'dashboard.html'; } else { alert('Login gagal'); }
             // Untuk demo, langsung redirect ke dashboard.html
             window.location.href = 'dashboard.html';
         });
