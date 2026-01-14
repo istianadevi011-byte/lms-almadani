@@ -31,7 +31,7 @@
 
     <div class="max-w-4xl mx-auto px-4 -mt-20 mb-10">
         
-        <a href="semester.html?kelas=11" class="block bg-white p-10 rounded-3xl shadow-2xl border-t-8 border-schoolBlue text-center transform transition hover:-translate-y-2 hover:scale-[1.01] relative overflow-hidden group cursor-pointer">
+        <div class="block bg-white p-10 rounded-3xl shadow-2xl border-t-8 border-schoolBlue text-center transform transition hover:-translate-y-2 hover:scale-[1.01] relative overflow-hidden group cursor-pointer">
             
             <div class="absolute -right-10 -top-10 w-40 h-40 bg-orange-100 rounded-full opacity-50 group-hover:scale-150 transition duration-500"></div>
 
@@ -43,11 +43,11 @@
                 <h2 class="text-3xl font-bold text-gray-800 mb-2">Mulai Belajar</h2>
                 <p class="text-gray-500 mb-8 max-w-lg mx-auto">Akses modul pembelajaran, video materi, dan kuis evaluasi di sini.</p>
                 
-                <span class="bg-schoolOrange text-white px-8 py-3 rounded-full text-lg font-bold shadow-lg group-hover:bg-orange-600 transition">
+                <button id="masukMateriBtn" class="bg-schoolOrange text-white px-8 py-3 rounded-full text-lg font-bold shadow-lg group-hover:bg-orange-600 transition">
                     MASUK KE MATERI <i class="fas fa-arrow-right ml-2"></i>
-                </span>
+                </button>
             </div>
-        </a>
+        </div>
 
     </div>
 
@@ -55,6 +55,13 @@
         <p class="text-sm">&copy; 2023 SMK Al Madani Garut.</p>
     </footer>
 
-</body>
+    <script>
+        // JavaScript untuk menangani klik tombol "MASUK KE MATERI" dan redirect ke semester.html
+        document.getElementById('masukMateriBtn').addEventListener('click', function() {
+            // Redirect ke halaman semester dengan parameter kelas=11
+            window.location.href = 'semester.html?kelas=11';
+        });
+    </script>
 
+</body>
 </html>
