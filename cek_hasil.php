@@ -1,0 +1,47 @@
+<?php
+session_start();
+include 'config/koneksi.php';
+
+if(isset($_POST['submit_kuis'])){
+    $id_siswa = $_SESSION['id_siswa'];
+    $id_materi = $_POST['id_materi'];
+    
+    // Kunci Jawaban (Sesuaikan dengan soal di kuis.php)
+    // 1:B, 2:A, 3:B, 4:C, 5:B
+    $jawaban_benar = 0;
+
+    if($_POST['soal1'] == 'B') $jawaban_benar++;
+    if($_POST['soal2'] == 'A') $jawaban_benar++;
+    if($_POST['soal3'] == 'B') $jawaban_benar++;
+    if($_POST['soal4'] == 'C') $jawaban_benar++;
+    if($_POST['soal5'] == 'B') $jawaban_benar++;
+
+    // Hitung Skor (Opsional, kalau mau pakai nilai 0-100)
+    // $skor = ($jawaban_benar / 5) * 100;
+
+    // LOGIKA UTAMA
+    // Minimal benar 3 dari 5 soal
+    if($jawaban_benar >= 3){
+        // --- SKENARIO LULUS ---
+        // 1. Update status materi jadi 'lulus'
+        // 2. Simpan nilai
+        mysqli_query($conn, "UPDATE progress SET status_materi='lulus', nilai_kuis='$jawaban_benar' WHERE id_siswa='$id_siswa' AND id_materi='$id_materi'");
+
+        echo "<script>
+            alert('SELAMAT! Anda Benar $jawaban_benar dari 5 Soal. Anda LULUS!');
+            window.location='daftar_materi.php?semester=1';
+        </script>";
+
+    } else {
+        // --- SKENARIO GAGAL (REMEDIAL) ---
+        // 1. Reset status_video jadi 0 (Supaya tombol kuis terkunci lagi)
+        // 2. Status materi tetap 'terbuka' (tapi video harus ditonton ulang)
+        mysqli_query($conn, "UPDATE progress SET status_video=0, nilai_kuis='$jawaban_benar' WHERE id_siswa='$id_siswa' AND id_materi='$id_materi'");
+
+        echo "<script>
+            alert('MAAF, Anda Gagal. Benar: $jawaban_benar (Min: 3). \\n\\nAnda harus MENONTON ULANG video sampai habis untuk bisa mengerjakan kuis lagi.');
+            window.location='materi_belajar.php?id=$id_materi';
+        </script>";
+    }
+}
+?>

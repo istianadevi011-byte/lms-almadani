@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SMK Al Madani - E-Learning</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: { extend: { colors: { schoolOrange: '#f59e0b', schoolBlue: '#1e3a8a' } } }
+        }
+    </script>
+    <style>html { scroll-behavior: smooth; }</style>
+</head>
+<body class="bg-gray-50 font-sans">
+
+    <nav class="bg-schoolOrange text-white shadow-lg fixed w-full top-0 z-50 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <div class="flex items-center gap-3 cursor-pointer" onclick="window.scrollTo(0,0)">
+                    <div class="bg-white p-2 rounded-full text-schoolOrange shadow-md">
+                        <i class="fas fa-school text-xl"></i>
+                    </div>
+                    <div class="leading-tight">
+                        <span class="block font-bold text-lg tracking-wide">SMK AL MADANI</span>
+                        <span class="block text-xs text-orange-100 font-light">Learning Management System</span>
+                    </div>
+                </div>
+                
+                <div class="hidden md:flex space-x-6 items-center">
+                    <a href="#beranda" class="hover:text-blue-900 font-medium transition">Beranda</a>
+                    <a href="#tentang" class="hover:text-blue-900 font-medium transition">Tentang</a>
+                    <a href="#kontak" class="hover:text-blue-900 font-medium transition">Kontak</a>
+                    
+                    <a href="https://smkalmadanigarut.sch.id" target="_blank" class="border border-white px-4 py-2 rounded-full text-sm hover:bg-white hover:text-schoolOrange transition">
+                        <i class="fas fa-globe mr-1"></i> Web Sekolah
+                    </a>
+                </div>
+                
+                <div class="flex gap-3">
+                    <a href="daftar.php" class="hidden md:inline-block text-white font-bold hover:text-blue-900 py-2.5 transition">
+                        Daftar
+                    </a>
+                    <a href="login.php" class="bg-white text-schoolOrange hover:bg-schoolBlue hover:text-white px-6 py-2.5 rounded-full font-bold shadow-lg transition transform hover:scale-105 flex items-center gap-2">
+                        <i class="fas fa-sign-in-alt"></i> Masuk
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <section id="beranda" class="relative pt-36 pb-24 bg-gradient-to-br from-schoolOrange to-orange-600 overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                
+                <div class="text-white text-center md:text-left">
+                    <span class="bg-white/20 text-white px-4 py-1 rounded-full text-sm font-bold tracking-wide mb-6 inline-block backdrop-blur-sm animate-pulse">
+                        🎓 E-LEARNING RESMI
+                    </span>
+                    <h1 class="text-4xl md:text-5xl font-extrabold mb-6 leading-tight drop-shadow-md">
+                        Belajar Digital<br>SMK Al Madani Garut
+                    </h1>
+                    <p class="text-lg text-orange-100 mb-8 font-light leading-relaxed">
+                        Akses materi, video, dan kuis di mana saja.
+                    </p>
+                    <div class="flex flex-col md:flex-row gap-4 justify-center md:justify-start">
+                        <a href="daftar.php" class="bg-white text-schoolOrange font-bold px-8 py-4 rounded-full shadow-xl hover:bg-gray-100 transition transform hover:-translate-y-1 text-center">
+                            Daftar Akun Baru
+                        </a>
+                        <a href="https://smkalmadanigarut.sch.id" target="_blank" class="border-2 border-white text-white font-bold px-8 py-4 rounded-full hover:bg-white hover:text-schoolOrange transition text-center">
+                            <i class="fas fa-globe mr-2"></i> Website Sekolah
+                        </a>
+                    </div>
+                </div>
+
+                <div class="relative hidden md:block">
+                    <img src="assets/img/sekolah.jpeg" alt="Gedung Sekolah" class="relative rounded-3xl shadow-2xl border-4 border-white/30 transform rotate-2 hover:rotate-0 transition duration-500 w-full object-cover h-80">
+                </div>
+            </div>
+        </div>
+        
+        <div class="absolute bottom-0 w-full leading-none">
+            <svg class="block w-full h-20 text-gray-50" viewBox="0 0 1440 320" preserveAspectRatio="none">
+                <path fill="currentColor" d="M0,224L48,213.3C96,203,192,181,288,181.3C384,181,480,203,576,224C672,245,768,267,864,250.7C960,235,1056,181,1152,165.3C1248,149,1344,171,1392,181.3L1440,192L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+            </svg>
+        </div>
+    </section>
+
+    <section id="tentang" class="py-20">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <h2 class="text-3xl font-bold text-gray-800">Fitur Unggulan</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-10">
+                <div class="bg-white p-6 rounded-xl shadow-lg border-t-4 border-schoolBlue">
+                    <i class="fas fa-video text-4xl text-schoolBlue mb-4"></i>
+                    <h3 class="font-bold text-xl mb-2">Video Materi</h3>
+                    <p class="text-gray-500">Belajar lewat video interaktif.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-lg border-t-4 border-schoolOrange">
+                    <i class="fas fa-book-open text-4xl text-schoolOrange mb-4"></i>
+                    <h3 class="font-bold text-xl mb-2">Modul Lengkap</h3>
+                    <p class="text-gray-500">Akses modul pembelajaran kapan saja.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-lg border-t-4 border-schoolBlue">
+                    <i class="fas fa-tasks text-4xl text-schoolBlue mb-4"></i>
+                    <h3 class="font-bold text-xl mb-2">Kuis Online</h3>
+                    <p class="text-gray-500">Uji kemampuan dengan kuis otomatis.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="creator" class="py-20 bg-gray-100">
+        <div class="max-w-4xl mx-auto px-4 text-center">
+            
+            <h2 class="text-3xl font-bold text-gray-800 mb-2">Tim Pengembang</h2>
+            <p class="text-gray-500 mb-12">Mahasiswa Institut Pendidikan Indonesia</p>
+
+            <div class="flex flex-col gap-6 items-center">
+                
+                <div class="bg-white p-6 rounded-2xl shadow-lg border-l-8 border-schoolOrange w-full max-w-2xl flex items-center gap-6 hover:shadow-2xl transition transform hover:-translate-y-1 text-left group">
+                    <div class="w-24 h-24 flex-shrink-0 relative">
+                        <img src="assets/img/1.jpeg" alt="Neneng" class="w-full h-full object-cover rounded-full border-4 border-orange-100 group-hover:border-schoolOrange transition">
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-800">Neneng Geuis N</h3>
+                        <p class="text-schoolOrange font-bold text-xs uppercase tracking-wide mt-1">Institut Pendidikan Indonesia</p>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-2xl shadow-lg border-l-8 border-schoolOrange w-full max-w-2xl flex items-center gap-6 hover:shadow-2xl transition transform hover:-translate-y-1 text-left group">
+                    <div class="w-24 h-24 flex-shrink-0 relative">
+                        <img src="assets/img/2.jpeg" alt="Japira" class="w-full h-full object-cover rounded-full border-4 border-orange-100 group-hover:border-schoolOrange transition">
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-800">Japira Aulia Putri</h3>
+                        <p class="text-schoolOrange font-bold text-xs uppercase tracking-wide mt-1">Institut Pendidikan Indonesia</p>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-2xl shadow-lg border-l-8 border-schoolOrange w-full max-w-2xl flex items-center gap-6 hover:shadow-2xl transition transform hover:-translate-y-1 text-left group">
+                    <div class="w-24 h-24 flex-shrink-0 relative">
+                        <img src="assets/img/4.jpeg" alt="Riska" class="w-full h-full object-cover rounded-full border-4 border-orange-100 group-hover:border-schoolOrange transition">
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-800">Riska siti awalunisa</h3>
+                        <p class="text-schoolOrange font-bold text-xs uppercase tracking-wide mt-1">Institut Pendidikan Indonesia</p>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-2xl shadow-lg border-l-8 border-schoolOrange w-full max-w-2xl flex items-center gap-6 hover:shadow-2xl transition transform hover:-translate-y-1 text-left group">
+                    <div class="w-24 h-24 flex-shrink-0 relative">
+                        <img src="assets/img/3.jpeg" alt="Sri" class="w-full h-full object-cover rounded-full border-4 border-orange-100 group-hover:border-schoolOrange transition">
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-800">Sri Devi Astuti</h3>
+                        <p class="text-schoolOrange font-bold text-xs uppercase tracking-wide mt-1">Institut Pendidikan Indonesia</p>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+
+    <section id="kontak" class="py-20 bg-gray-900 text-white relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                
+                <div>
+                    <h2 class="text-3xl font-bold text-schoolOrange mb-6">Hubungi Kami</h2>
+                    <p class="text-gray-400 mb-8 leading-relaxed">
+                        Punya pertanyaan seputar PPDB atau kendala saat mengakses E-Learning? Hubungi tim support kami.
+                    </p>
+
+                    <div class="space-y-6">
+                        <div class="flex items-start gap-4">
+                            <div class="bg-gray-800 p-3 rounded-lg text-schoolOrange shadow-md">
+                                <i class="fas fa-map-marker-alt text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-white text-lg">Alamat Sekolah</h4>
+                                <p class="text-gray-400 text-sm">Jl. Raya Samarang No. 123, Garut, Jawa Barat</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-4">
+                            <div class="bg-gray-800 p-3 rounded-lg text-schoolOrange shadow-md">
+                                <i class="fas fa-envelope text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-white text-lg">Email Support</h4>
+                                <p class="text-gray-400 text-sm">admin@smkalmadanigarut.sch.id</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-gray-800 p-2 rounded-xl shadow-2xl h-80 relative overflow-hidden group">
+                    <iframe 
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3958.960241866384!2d107.88673731477468!3d-7.130386994851211!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e68b0651d6c353d%3A0x62952402179612c3!2sGarut%2C%20Kabupaten%20Garut%2C%20Jawa%20Barat!5e0!3m2!1sid!2sid!4v1645671234567!5m2!1sid!2sid" 
+                        width="100%" 
+                        height="100%" 
+                        style="border:0;" 
+                        allowfullscreen="" 
+                        loading="lazy" 
+                        class="rounded-lg grayscale group-hover:grayscale-0 transition duration-700">
+                    </iframe>
+                    <a href="https://goo.gl/maps/xyz" target="_blank" class="absolute bottom-4 right-4 bg-schoolOrange hover:bg-orange-600 text-white px-5 py-2 rounded-lg text-sm font-bold shadow-lg transition flex items-center gap-2 transform hover:scale-105">
+                        <i class="fas fa-map-marked-alt"></i> Buka di Google Maps
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-black text-center py-6 border-t border-gray-800">
+        <p class="text-gray-500 text-sm">
+            © <?php echo date('Y'); ?> <span class="text-schoolOrange font-bold">SMK Al Madani Garut</span>. All Rights Reserved.
+        </p>
+    </footer>
+
+</body>
+</html>

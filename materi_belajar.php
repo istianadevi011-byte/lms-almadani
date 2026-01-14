@@ -1,0 +1,269 @@
+<?php
+session_start();
+include 'config/koneksi.php';
+
+// --- 1. CEK KEAMANAN & LOGIN ---
+if(!isset($_SESSION['status']) || $_SESSION['status'] != "login"){ 
+    header("location:index.php"); 
+    exit; 
+}
+$id_siswa = $_SESSION['id_siswa'];
+
+// Cek ID Materi di URL
+if(!isset($_GET['id']) || empty($_GET['id'])){ 
+    echo "<script>alert('Materi tidak ditemukan!'); window.location='dashboard.php';</script>"; 
+    exit; 
+}
+$id_materi = $_GET['id'];
+
+// --- 2. AMBIL DATA MATERI DARI DATABASE ---
+$q_materi = mysqli_query($conn, "SELECT * FROM materi WHERE id_materi='$id_materi'");
+if(mysqli_num_rows($q_materi) == 0){
+    echo "<script>alert('Materi tidak ada di database!'); window.location='dashboard.php';</script>"; 
+    exit;
+}
+$materi = mysqli_fetch_array($q_materi);
+$link_video = $materi['link_video'];
+
+// --- 3. DETEKSI JENIS VIDEO (YOUTUBE vs LOKAL) ---
+$is_youtube = true;
+$youtube_id = '';
+
+// Cek apakah link mengandung .mp4 atau .mkv (Berarti Video Lokal)
+if(strpos($link_video, '.mp4') !== false || strpos($link_video, '.mkv') !== false) {
+    $is_youtube = false;
+} else {
+    // Jika bukan file lokal, anggap YouTube & Ekstrak ID-nya
+    if (preg_match('/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i', $link_video, $match)) {
+        $youtube_id = $match[1];
+    } else {
+        $youtube_id = $link_video; // Jaga-jaga user input ID doang
+    }
+}
+
+// --- 4. CEK PROGRESS SISWA ---
+$cek_prog = mysqli_query($conn, "SELECT * FROM progress WHERE id_siswa='$id_siswa' AND id_materi='$id_materi'");
+$status_video = 0; // Default: Belum selesai
+
+if(mysqli_num_rows($cek_prog) > 0){
+    $d = mysqli_fetch_array($cek_prog);
+    $status_video = $d['status_video'];
+} else {
+    // Jika belum ada data progress, buat baru
+    mysqli_query($conn, "INSERT INTO progress (id_siswa, id_materi, status_video, status_materi) VALUES ('$id_siswa', '$id_materi', 0, 'terbuka')");
+}
+?>
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><?php echo $materi['judul_materi']; ?> - Belajar Online</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <script> 
+        tailwind.config = { 
+            theme: { extend: { colors: { schoolOrange: '#f59e0b', schoolBlue: '#1e3a8a' } } } 
+        } 
+    </script>
+    
+    <style>
+        /* Styling khusus Tab */
+        .active-tab { background-color: #f59e0b; color: white; border-color: #f59e0b; }
+        .inactive-tab { background-color: white; color: #6b7280; border-color: #e5e7eb; }
+        
+        /* Styling Teks Materi agar Rapi */
+        .prose h3 { font-size: 1.25rem; font-weight: 700; color: #1e3a8a; margin-top: 1.5rem; margin-bottom: 0.5rem; }
+        .prose p { margin-bottom: 1rem; line-height: 1.7; color: #374151; }
+        .prose ul, .prose ol { margin-bottom: 1rem; padding-left: 1.5rem; color: #374151; }
+        .prose li { margin-bottom: 0.5rem; }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans pb-20">
+    
+    <nav class="bg-schoolOrange text-white py-4 px-6 shadow-md sticky top-0 z-50">
+        <div class="max-w-4xl mx-auto flex justify-between items-center">
+            <a href="daftar_materi.php?semester=<?php echo $materi['semester']; ?>" class="font-bold flex items-center gap-2 hover:text-blue-900 transition">
+                <i class="fas fa-arrow-left"></i> Kembali
+            </a>
+            <span class="text-xs md:text-sm bg-white/20 px-3 py-1 rounded font-medium">
+                Materi Ke-<?php echo $materi['urutan']; ?>
+            </span>
+        </div>
+    </nav>
+
+    <div class="max-w-4xl mx-auto px-4 py-6">
+        
+        <div class="bg-white p-6 rounded-2xl shadow-sm mb-6 border-l-8 border-schoolBlue">
+            <h1 class="text-2xl font-bold text-gray-800 leading-tight"><?php echo $materi['judul_materi']; ?></h1>
+            <p class="text-gray-500 text-sm mt-2">
+                <i class="fas fa-info-circle text-schoolOrange"></i> Silakan tonton video atau baca modul di bawah ini.
+            </p>
+        </div>
+
+        <div class="flex gap-4 mb-6">
+            <button onclick="switchTab('video')" id="btnVideo" class="active-tab flex-1 py-3 px-4 rounded-xl font-bold shadow-sm border-2 transition flex items-center justify-center gap-2">
+                <i class="fas fa-play-circle text-xl"></i> Tonton Video
+            </button>
+            <button onclick="switchTab('teks')" id="btnTeks" class="inactive-tab flex-1 py-3 px-4 rounded-xl font-bold shadow-sm border-2 transition flex items-center justify-center gap-2 hover:bg-gray-50">
+                <i class="fas fa-book-open text-xl"></i> Baca Materi
+            </button>
+        </div>
+
+        <div id="tabVideo" class="block animate-fade-in">
+            <div class="bg-black w-full aspect-video shadow-2xl rounded-2xl overflow-hidden relative">
+                <?php if($is_youtube) { ?>
+                    <div id="player"></div>
+                <?php } else { ?>
+                    <video id="localVideo" class="w-full h-full" controls controlsList="nodownload">
+                        <source src="assets/videos/<?php echo $link_video; ?>" type="video/mp4">
+                        Browser Anda tidak support video.
+                    </video>
+                <?php } ?>
+            </div>
+            
+            <?php if($status_video == 0) { ?>
+                <p class="text-center text-xs text-red-500 mt-3 font-semibold bg-red-50 py-2 rounded">
+                    *Tonton video sampai selesai agar tombol kuis terbuka.
+                </p>
+            <?php } ?>
+        </div>
+
+        <div id="tabTeks" class="hidden animate-fade-in">
+            <div class="bg-white p-6 md:p-10 rounded-2xl shadow-lg border border-gray-200 prose w-full max-w-none">
+                
+                <?php 
+                    // Logika: Cari file assets/isi_materi/{ID}.php
+                    $file_materi = "assets/isi_materi/" . $materi['id_materi'] . ".php";
+                    
+                    if(file_exists($file_materi)){
+                        // Jika file ada, tampilkan isinya
+                        include $file_materi;
+                    } else {
+                        // Jika file belum dibuat
+                        echo "<div class='text-center py-10 text-gray-400 bg-gray-50 rounded-xl border-2 border-dashed border-gray-300'>";
+                        echo "<i class='fas fa-file-code text-4xl mb-4'></i>";
+                        echo "<p class='font-bold text-gray-600'>Konten Teks Belum Tersedia.</p>";
+                        echo "<p class='text-xs mt-2'>Admin: Silakan buat file <code>assets/isi_materi/" . $materi['id_materi'] . ".php</code></p>";
+                        echo "</div>";
+                    }
+                ?>
+                
+                <?php if(!empty($materi['file_pdf'])) { ?>
+                    <div class="mt-8 pt-6 border-t border-gray-100">
+                        <a href="assets/modul/<?php echo $materi['file_pdf']; ?>" target="_blank" class="inline-flex items-center gap-3 text-red-600 font-bold hover:underline bg-red-50 px-5 py-3 rounded-xl border border-red-100 transition hover:bg-red-100 w-full justify-center md:w-auto">
+                            <i class="fas fa-file-pdf text-xl"></i> Download Versi PDF Lengkap
+                        </a>
+                    </div>
+                <?php } ?>
+
+            </div>
+        </div>
+
+        <div id="areaTombol" class="mt-8 mb-10">
+            <a href="kuis.php?id=<?php echo $id_materi; ?>" 
+               id="tombolKuis" 
+               class="<?php echo ($status_video == 1) ? 'bg-schoolOrange hover:bg-orange-600 shadow-orange-500/50 cursor-pointer text-white' : 'bg-gray-300 text-gray-500 cursor-not-allowed pointer-events-none grayscale'; ?> 
+                      w-full block text-center font-bold text-xl py-5 rounded-2xl shadow-lg transition-all duration-300 transform hover:-translate-y-1 flex items-center justify-center gap-3">
+               
+               <?php if($status_video == 1) { ?>
+                    <i class="fas fa-check-circle text-2xl"></i> SIAP MENGERJAKAN KUIS
+               <?php } else { ?>
+                    <i class="fas fa-lock text-2xl"></i> KUIS TERKUNCI
+               <?php } ?>
+            </a>
+        </div>
+
+    </div>
+
+    <script>
+        // Data dari PHP ke JS
+        var id_siswa = "<?php echo $id_siswa; ?>";
+        var id_materi = "<?php echo $id_materi; ?>";
+        var btn = document.getElementById("tombolKuis");
+        var isYoutube = <?php echo $is_youtube ? 'true' : 'false'; ?>;
+
+        // 1. FUNGSI GANTI TAB
+        function switchTab(mode){
+            const tabVideo = document.getElementById('tabVideo');
+            const tabTeks = document.getElementById('tabTeks');
+            const btnVideo = document.getElementById('btnVideo');
+            const btnTeks = document.getElementById('btnTeks');
+
+            if(mode === 'video'){
+                tabVideo.classList.remove('hidden');
+                tabTeks.classList.add('hidden');
+                
+                btnVideo.className = "active-tab flex-1 py-3 px-4 rounded-xl font-bold shadow-sm border-2 transition flex items-center justify-center gap-2";
+                btnTeks.className = "inactive-tab flex-1 py-3 px-4 rounded-xl font-bold shadow-sm border-2 transition flex items-center justify-center gap-2 hover:bg-gray-50";
+            } else {
+                tabVideo.classList.add('hidden');
+                tabTeks.classList.remove('hidden');
+
+                btnTeks.className = "active-tab flex-1 py-3 px-4 rounded-xl font-bold shadow-sm border-2 transition flex items-center justify-center gap-2";
+                btnVideo.className = "inactive-tab flex-1 py-3 px-4 rounded-xl font-bold shadow-sm border-2 transition flex items-center justify-center gap-2 hover:bg-gray-50";
+            }
+        }
+
+        // 2. FUNGSI UNLOCK KUIS (DIPANGGIL SAAT VIDEO SELESAI)
+        function unlockButton(){
+            // Ubah Tampilan Tombol
+            btn.classList.remove("bg-gray-300", "text-gray-500", "cursor-not-allowed", "pointer-events-none", "grayscale");
+            btn.classList.add("bg-schoolOrange", "hover:bg-orange-600", "shadow-orange-500/50", "cursor-pointer", "text-white");
+            btn.innerHTML = '<i class="fas fa-check-circle text-2xl"></i> SIAP MENGERJAKAN KUIS';
+            
+            // Simpan Status ke Database (AJAX)
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "update_video.php", true);
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            xhr.send("id_siswa=" + id_siswa + "&id_materi=" + id_materi);
+            console.log("Video selesai, progress disimpan.");
+        }
+
+        // 3. LOGIKA PLAYER VIDEO
+        if(isYoutube){
+            // --- YOUTUBE API ---
+            var tag = document.createElement('script');
+            tag.src = "https://www.youtube.com/iframe_api";
+            var firstScriptTag = document.getElementsByTagName('script')[0];
+            firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+            var player;
+            function onYouTubeIframeAPIReady() {
+                if('<?php echo $youtube_id; ?>' !== ''){
+                    player = new YT.Player('player', {
+                        height: '100%', width: '100%',
+                        videoId: '<?php echo $youtube_id; ?>',
+                        playerVars: { 'playsinline': 1, 'rel': 0 },
+                        events: {
+                            'onStateChange': function(event) {
+                                // YT.PlayerState.ENDED bernilai 0
+                                if (event.data == YT.PlayerState.ENDED) { unlockButton(); }
+                            }
+                        }
+                    });
+                }
+            }
+        } else {
+            // --- VIDEO LOKAL (MP4) ---
+            var localVid = document.getElementById("localVideo");
+            if(localVid){
+                // Saat video selesai diputar
+                localVid.onended = function() { unlockButton(); };
+                
+                // Anti-Skip Sederhana (Mencegah user memajukan durasi)
+                var supposedCurrentTime = 0;
+                localVid.ontimeupdate = function() {
+                    if (!localVid.seeking) { supposedCurrentTime = localVid.currentTime; }
+                };
+                localVid.onseeking = function() {
+                    var delta = localVid.currentTime - supposedCurrentTime;
+                    if (delta > 0.01) { localVid.currentTime = supposedCurrentTime; }
+                };
+            }
+        }
+    </script>
+</body>
+</html>

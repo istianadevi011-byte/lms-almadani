@@ -1,0 +1,145 @@
+<?php
+session_start();
+include 'config/koneksi.php';
+
+// Jika sudah login, lempar ke dashboard
+if(isset($_SESSION['status']) && $_SESSION['status'] == "login"){
+    header("location:dashboard.php");
+    exit;
+}
+
+if(isset($_POST['daftar'])){
+    $nama = mysqli_real_escape_string($conn, $_POST['nama']);
+    $email = mysqli_real_escape_string($conn, $_POST['email']);
+    $pass = mysqli_real_escape_string($conn, $_POST['password']);
+    
+    // Default kelas 10
+    $kelas = "10"; 
+
+    // 1. CEK APAKAH EMAIL SUDAH TERDAFTAR?
+    $cek_email = mysqli_query($conn, "SELECT email FROM siswa WHERE email='$email'");
+    if(mysqli_num_rows($cek_email) > 0){
+        $error_msg = "Email sudah terdaftar! Silakan login.";
+    } else {
+        // 2. SIMPAN KE DATABASE (Tanpa NIS)
+        $simpan = mysqli_query($conn, "INSERT INTO siswa (nama_siswa, email, password, kelas) VALUES ('$nama', '$email', '$pass', '$kelas')");
+        
+        if($simpan){
+            echo "<script>alert('Pendaftaran Berhasil! Silakan Login.'); window.location='login.php';</script>";
+        } else {
+            $error_msg = "Terjadi kesalahan sistem. Coba lagi nanti.";
+        }
+    }
+}
+?>
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar Akun - SMK Al Madani</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script> tailwind.config = { theme: { extend: { colors: { schoolOrange: '#f59e0b', schoolBlue: '#1e3a8a' } } } } </script>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+
+    <div class="bg-white w-full max-w-5xl rounded-2xl shadow-2xl overflow-hidden flex flex-col md:flex-row">
+        
+        <div class="w-full md:w-1/2 p-10 md:p-14 order-2 md:order-1">
+            <div class="text-center mb-6">
+                <h3 class="text-2xl font-bold text-gray-800">Buat Akun Siswa</h3>
+                <p class="text-gray-400 text-sm">Hanya butuh Email & Nama untuk mulai belajar.</p>
+            </div>
+
+            <?php if(isset($error_msg)) { ?>
+                <div class="bg-red-50 border-l-4 border-red-500 text-red-600 p-4 mb-6 text-sm rounded flex items-center gap-2">
+                    <i class="fas fa-exclamation-circle text-lg"></i>
+                    <span><?php echo $error_msg; ?></span>
+                </div>
+            <?php } ?>
+
+            <form action="" method="POST" class="space-y-5">
+                
+                <div>
+                    <label class="block text-gray-700 font-bold mb-1 text-xs uppercase tracking-wide">Nama Lengkap</label>
+                    <div class="relative">
+                        <input type="text" name="nama" required placeholder="Contoh: Budi Santoso" 
+                            class="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-300 focus:border-schoolOrange focus:ring-2 focus:ring-orange-200 outline-none transition bg-gray-50 focus:bg-white">
+                        <i class="fas fa-user absolute left-3 top-3.5 text-gray-400"></i>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-gray-700 font-bold mb-1 text-xs uppercase tracking-wide">Email</label>
+                    <div class="relative">
+                        <input type="email" name="email" required placeholder="nama@email.com" 
+                            class="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-300 focus:border-schoolOrange focus:ring-2 focus:ring-orange-200 outline-none transition bg-gray-50 focus:bg-white">
+                        <i class="fas fa-envelope absolute left-3 top-3.5 text-gray-400"></i>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-gray-700 font-bold mb-1 text-xs uppercase tracking-wide">Password</label>
+                    <div class="relative">
+                        <input type="password" name="password" required placeholder="Buat kata sandi" 
+                            class="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-300 focus:border-schoolOrange focus:ring-2 focus:ring-orange-200 outline-none transition bg-gray-50 focus:bg-white">
+                        <i class="fas fa-lock absolute left-3 top-3.5 text-gray-400"></i>
+                    </div>
+                </div>
+
+                <button type="submit" name="daftar" class="w-full bg-schoolOrange hover:bg-orange-600 text-white font-bold py-3 rounded-lg shadow-lg hover:shadow-xl transition transform hover:-translate-y-1 mt-4">
+                    DAFTAR SEKARANG <i class="fas fa-arrow-right ml-2"></i>
+                </button>
+
+            </form>
+
+            <div class="mt-6 text-center pt-6 border-t border-gray-100">
+                <p class="text-gray-500 text-sm">Sudah punya akun?</p>
+                <a href="login.php" class="inline-block mt-1 text-schoolBlue font-bold hover:underline transition">
+                    Silakan Masuk di Sini
+                </a>
+            </div>
+            
+             <div class="mt-4 text-center">
+                <a href="index.php" class="text-gray-400 hover:text-gray-600 text-xs flex items-center justify-center gap-1">
+                    <i class="fas fa-arrow-left"></i> Kembali ke Beranda
+                </a>
+            </div>
+        </div>
+
+        <div class="w-full md:w-1/2 bg-gradient-to-bl from-schoolBlue to-blue-900 p-10 text-white flex flex-col justify-center relative order-1 md:order-2 overflow-hidden">
+            <i class="fas fa-atom absolute top-10 right-10 text-8xl opacity-10 animate-spin-slow"></i>
+            <i class="fas fa-globe absolute bottom-10 left-10 text-8xl opacity-10"></i>
+            
+            <div class="relative z-10 text-center md:text-right">
+                <div class="bg-white/10 w-20 h-20 rounded-full flex items-center justify-center mb-6 mx-auto md:ml-auto md:mr-0 backdrop-blur-md border border-white/20 shadow-lg">
+                    <i class="fas fa-rocket text-4xl"></i>
+                </div>
+                <h2 class="text-3xl font-bold mb-4">Mulai Perjalanan Belajarmu!</h2>
+                <p class="text-blue-100 text-sm leading-relaxed mb-6">
+                    Bergabunglah dengan ribuan siswa lainnya. Nikmati akses materi lengkap dan video pembelajaran interaktif sekarang juga.
+                </p>
+                
+                <div class="bg-white/10 p-5 rounded-xl backdrop-blur-sm border border-white/10 text-left shadow-inner">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="bg-green-400 rounded-full p-1"><i class="fas fa-check text-white text-xs"></i></div>
+                        <span class="text-sm font-bold">Pendaftaran Gratis</span>
+                    </div>
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="bg-green-400 rounded-full p-1"><i class="fas fa-check text-white text-xs"></i></div>
+                        <span class="text-sm font-bold">Akses Selamanya</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="bg-green-400 rounded-full p-1"><i class="fas fa-check text-white text-xs"></i></div>
+                        <span class="text-sm font-bold">Materi Terupdate</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>
