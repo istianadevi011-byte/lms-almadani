@@ -1,8 +1,3 @@
-<?php
-session_start();
-if($_SESSION['status'] != "login"){ header("location:index.php"); }
-?>
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -22,21 +17,21 @@ if($_SESSION['status'] != "login"){ header("location:index.php"); }
                     <i class="fas fa-school text-white text-xl"></i>
                     <span class="font-bold tracking-wide">LMS AL MADANI</span>
                 </div>
-                <a href="logout.php" class="text-sm hover:text-blue-900 bg-white/20 px-3 py-1 rounded transition"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                <a href="logout.html" class="text-sm hover:text-blue-900 bg-white/20 px-3 py-1 rounded transition"><i class="fas fa-sign-out-alt"></i> Logout</a>
             </div>
         </div>
     </nav>
 
     <div class="bg-schoolOrange pb-32 pt-10 px-4 shadow-lg rounded-b-[3rem]">
         <div class="max-w-6xl mx-auto text-center text-white">
-            <h1 class="text-3xl md:text-4xl font-bold mb-2">Halo, <?php echo $_SESSION['nama']; ?>! 👋</h1>
+            <h1 class="text-3xl md:text-4xl font-bold mb-2">Halo, Nama Siswa! 👋</h1>
             <p class="text-orange-100 text-lg">Selamat datang di portal pembelajaran online.</p>
         </div>
     </div>
 
     <div class="max-w-4xl mx-auto px-4 -mt-20 mb-10">
         
-        <a href="semester.php?kelas=11" class="block bg-white p-10 rounded-3xl shadow-2xl border-t-8 border-schoolBlue text-center transform transition hover:-translate-y-2 hover:scale-[1.01] relative overflow-hidden group cursor-pointer">
+        <a href="semester.html?kelas=11" class="block bg-white p-10 rounded-3xl shadow-2xl border-t-8 border-schoolBlue text-center transform transition hover:-translate-y-2 hover:scale-[1.01] relative overflow-hidden group cursor-pointer">
             
             <div class="absolute -right-10 -top-10 w-40 h-40 bg-orange-100 rounded-full opacity-50 group-hover:scale-150 transition duration-500"></div>
 
@@ -57,8 +52,9 @@ if($_SESSION['status'] != "login"){ header("location:index.php"); }
     </div>
 
     <footer class="bg-schoolOrange text-white text-center py-6 mt-auto">
-        <p class="text-sm">&copy; <?php echo date('Y'); ?> SMK Al Madani Garut.</p>
+        <p class="text-sm">&copy; 2023 SMK Al Madani Garut.</p>
     </footer>
 
 </body>
+
 </html>
