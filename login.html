@@ -42,7 +42,7 @@
                 <p>Email atau Password salah.</p>
             </div>
 
-            <form id="loginForm" class="space-y-6">
+            <form action="dashboard.html" method="POST" class="space-y-6">
                 <div>
                     <label class="block text-gray-700 font-bold mb-2 text-sm ml-1">Email Siswa</label>
                     <div class="relative">
@@ -84,16 +84,6 @@
             </div>
         </div>
     </div>
-
-    <script>
-        // JavaScript untuk menangani submit form dan redirect ke dashboard.html
-        document.getElementById('loginForm').addEventListener('submit', function(event) {
-            event.preventDefault(); // Mencegah submit default
-            // Di sini Anda bisa menambahkan validasi atau pengiriman data ke server
-            // Untuk demo, langsung redirect ke dashboard.html
-            window.location.href = 'dashboard.html';
-        });
-    </script>
 
 </body>
 </html>
